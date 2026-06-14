@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entertainment Bazar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- গ্লোবাল স্টাইল --- */
+        :root {
+            --bg-color: #11161b;
+            --card-bg: #1a2229;
+            --primary-color: #e52d27;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 100px;
+        }
+
+        .top-red-bar {
+            background-color: var(--primary-color);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #0b0e11;
+        }
+
+        .site-logo { font-size: 20px; font-weight: bold; }
+        .site-logo span { background-color: var(--primary-color); padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
+        .search-top-btn { background-color: var(--primary-color); border: none; color: white; padding: 6px 15px; border-radius: 4px; font-weight: bold; }
+
+        /* ===================================================
+           আপনার মনের মতো কাস্টম টপ পপআপ নোটিফিকেশন স্টাইল
+        ====================================================== */
+        .top-popup-box {
+            position: fixed;
+            top: 60px; /* হেডার বা লোগো সেকশনের ঠিক নিচে উপরে ভেসে থাকবে */
+            left: 5%;
+            width: 90%;
+            max-width: 450px;
+            background-color: #0f3073; /* গাঢ় নীল ব্যাকগ্রাউন্ড */
+            border-radius: 20px; /* চারপাশ ছোট করে গোলানো */
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            z-index: 99999; /* যেন সবার ওপরে থাকে */
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .popup-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .popup-avatar {
+            width: 42px;
+            height: 42px;
+            background-color: #ff3b30;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+        }
+
+        .popup-text { color: #ffffff; }
+        .popup-text h4 { font-size: 14px; margin-bottom: 2px; font-weight: bold; }
+        .popup-text p { font-size: 11px; color: #cbd5e1; }
+
+        .popup-right {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* "এগিয়ে যান" বাটন স্টাইল */
+        .forward-btn {
+            background-color: #ffffff;
+            color: #0f3073;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* উপরে ডানদিকের ছোট ক্রস বাটন */
+        .close-popup-x {
+            position: absolute;
+            top: -24px; /* বাটনের ঠিক ওপরে পজিশন */
+            right: 2px;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .close-popup-x:hover { color: #ff3b30; }
+
+        /* --- বাকি পেজ স্টাইল --- */
+        .date-banner { background-color: var(--primary-color); padding: 8px 15px; font-weight: bold; margin: 15px 0; display: flex; align-items: center; gap: 10px; }
+        .date-number { background: #fff; color: var(--primary-color); width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; border-radius: 4px; }
+        .main-content { max-width: 600px; margin: 0 auto; padding: 0 10px; }
+        .image-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background-color: var(--card-bg); border-radius: 6px; overflow: hidden; position: relative; padding-bottom: 10px; border: 1px solid #222b35; }
+        .video-thumbnail-wrapper { width: 100%; height: 140px; background-color: #25313d; display: flex; justify-content: center; align-items: center; }
+        .play-btn { width: 38px; height: 38px; background-color: var(--primary-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; }
+        .card-title { padding: 8px 6px 0 6px; font-size: 12px; }
+
+        /* --- বটম নেভিগেশন বার --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #0b0e11; display: flex; justify-content: space-around; align-items: flex-end; padding: 8px 0 12px 0; border-top: 1px solid #1a2229; z-index: 999; }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 12px; font-weight: bold; flex: 1; position: relative; }
+        .nav-item span { margin-top: 6px; color: #a0aab5; }
+        .nav-item.file-active span { color: #ff3344; }
+        .nav-icon { font-size: 26px; }
+        .nav-item.home-center { margin-top: -20px; }
+        .home-circle { width: 60px; height: 60px; background-color: #ff2244; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; }
+        .badge-count { position: absolute; top: -4px; right: 25%; background-color: #ff2244; color: white; font-size: 10px; padding: 1px 5px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+
+    <div class="top-red-bar">
+        🔥 Entertainment Bazar — সেরা ভিডিও কালেকশন 🔥
+    </div>
+
+    <div class="logo-section">
+        <div class="site-logo"><span>Entertainment</span>Bazar</div>
+        <button class="search-top-btn"><i class="fa-solid fa-magnifying-glass"></i> খুঁজুন</button>
+    </div>
+
+
+    <div class="top-popup-box" id="topPopup1">
+        <div class="popup-left">
+            <div class="popup-avatar">👩</div> 
+            <div class="popup-text">
+                <h4>Sexy Shila</h4>
+                <p>আমার সাথে ভিডিও কলে চ্যাট করুন</p>
+            </div>
+        </div>
+        <div class="popup-right">
+            <span class="close-popup-x" onclick="closeTopPopup('topPopup1')">&times;</span>
+            <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="forward-btn">এগিয়ে যান</a>
+        </div>
+    </div>
+
+    <div class="top-popup-box" id="topPopup2" style="display: none; background-color: #a81c1c;">
+        <div class="popup-left">
+            <div class="popup-avatar" style="background-color: #ffeb3b;">🎁</div>
+            <div class="popup-text">
+                <h4>অভিনন্দন! আপনি ১০ হাজার টাকা বোনাস পেয়েছেন</h4>
+                <p>আমাদের গ্রুপে যুক্ত হয়ে বোনাস নিন!</p>
+            </div>
+        </div>
+        <div class="popup-right">
+            <span class="close-popup-x" onclick="closeTopPopup('topPopup2')">&times;</span>
+            <a href="https://https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="forward-btn" style="color: #a81c1c;">এগিয়ে যান</a>
+        </div>
+    </div>
+
+<div class="date-banner">
+        <div class="date-number">1</div> <span>• TODAY NEW</span>
+    </div>
+<main class="main-content">
+        <div class="image-grid">
+            <div class="card">
+<span class="badge-hd">HD</span>
+                      <span class="badge-premium">PREMIUM</span>
+                <div class="video-thumbnail-wrapper">
+            <img src="pic6.jpeg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
+
+<a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" style="text-decoration: none; position:relative; z-index:2;">
+                    <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                  
+                </div>
+                <div class="card-title">কলেজ ফাঁকি দিয়ে দুজনে...</div>
+            </div>
+
+ </main>
+
+
+
+<div class="date-banner">
+        14.06.26 New Collection
+    </div>
+
+    <main class="main-content">
+        <div class="image-grid">
+            
+            <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="card-link">
+                <div class="card">
+                    <div class="badge-container">
+                        <span class="badge-hd">HD</span>
+                        <span class="badge-premium">PREMIUM</span>
+                    </div>
+                    <div class="video-thumbnail-wrapper">
+ <img src="pic5.jpeg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
+                        <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                    </div>
+                    <div class="card-title">লাইভে এসে সব কিছু উজার করে দিল ♥</div>
+                </div>
+            </a>
+
+            <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="card-link">
+                <div class="card">
+                    <div class="badge-container">
+                        <span class="badge-hd">HD</span>
+                        <span class="badge-premium">PREMIUM</span>
+                    </div>
+                    <div class="video-thumbnail-wrapper">
+ <img src="pic8.jpeg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
+                        <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                    </div>
+                    <div class="card-title">সুযোগ পেয়ে গাড়ির ভিতরেই কাজ সারলো🥵</div>
+                </div>
+            </a>
+ <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="card-link">
+                <div class="card">
+                    <div class="badge-container">
+                        <span class="badge-hd">HD</span>
+                        <span class="badge-premium">PREMIUM</span>
+                    </div>
+                    <div class="video-thumbnail-wrapper">
+ <img src="pic7.jpeg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
+                        <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                    </div>
+                    <div class="card-title">ভাইরাল ভিডিও লিংক 💥</div>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+<div class="date-banner">
+        <div class="date-number">1</div> <span>• 13.06.26</span>
+    </div>
+<main class="main-content">
+        <div class="image-grid">
+            <div class="card">
+<span class="badge-hd">HD</span>
+                      <span class="badge-premium">PREMIUM</span>
+                <div class="video-thumbnail-wrapper">
+            <img src="pic2.jpeg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
+
+<a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" style="text-decoration: none; position:relative; z-index:2;">
+                    <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                  
+                </div>
+                <div class="card-title">Joto Paro Chuse Khau</div>
+            </div>
+
+ </main>
+
+    <nav class="bottom-nav">
+        <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="nav-item file-active">
+            <span class="nav-icon">📁</span>
+            <span>ফাইল</span>
+        </a>
+        <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="nav-item">
+            <span class="nav-icon">🎬</span>
+            <span>নতুন</span>
+        </a>
+        <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="nav-item home-center">
+            <div class="home-circle">🏠</div>
+        </a>
+        <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="nav-item">
+            <div class="badge-count">4</div>
+            <span class="nav-icon">📷</span>
+            <span>ট্রেন্ড</span>
+        </a>
+        <a href="https://www.effectivecpmnetwork.com/e26jxv03k?key=aad1548c6b15f306fd185b2940ef00d2" class="nav-item">
+            <span class="nav-icon">🔍</span>
+            <span>খুঁজুন</span>
+        </a>
+    </nav>
+
+
+    <script>
+        function closeTopPopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+            
+            // ১ম পপআপ ক্রস বাটনে কেটে দিলে ০.৫ সেকেন্ড পর ২য় পপআপটি ওপরে চলে আসবে
+            if(popupId === 'topPopup1') {
+                setTimeout(function() {
+                    document.getElementById('topPopup2').style.display = 'flex';
+                }, 500);
+            }
+        }
+    </script>
+
+</body>
+</html>
